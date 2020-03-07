@@ -12,7 +12,7 @@ router.use(passport.session());
 
 // Setting up auth strategy
 passport.use(new localStrategy(
-    function(username, password, done) {
+    function (username, password, done) {
         if (username === 'admin' && password === 'admin') {
             return done(null, 'magic');
         } else {
@@ -22,13 +22,13 @@ passport.use(new localStrategy(
 ));
 
 // Serializing and deserializing for session data storage
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
     if (user) {
         done(null, user);
     }
 });
 
-passport.deserializeUser(function(id, done) {
+passport.deserializeUser(function (id, done) {
     done(null, id);
 });
 
@@ -42,7 +42,7 @@ const auth = () => {
             if (!user) {
                 return res.status(400).json({ 'statusCode': 400, 'message': 'Not Authenticated' });
             }
-            req.login(user, function(err) {
+            req.login(user, function (err) {
                 if (err) {
                     return next(err);
                 }
@@ -60,15 +60,15 @@ const isAuthenticated = (req, res, next) => {
 };
 
 // Mob API routes
-router.post('/login', auth(), function(req, res) {
+router.post('/login', auth(), function (req, res) {
     res.status(200).json({ 'statusCode': 200, 'message': 'login successful' });
 });
 
-router.get('/verify', isAuthenticated, function(req, res) {
+router.get('/verify', isAuthenticated, function (req, res) {
     res.end('verify success');
 });
 
-router.get('/test', function(req, res) {
+router.get('/test', function (req, res) {
     res.end('henlo frand');
 });
 

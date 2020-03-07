@@ -11,14 +11,17 @@ api.mob = apiMob;
 
 // Express use utilities
 app.use(bodyParser.json());
-app.use(function(req, res, next) {
+
+// Only for dev period
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "http://localhost:4200"); 
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+
 app.use('/mob', api.mob);
 
-app.get('/test', function(req, res) {
+app.get('/test', function (req, res) {
     res.end('hello');
 });
 
