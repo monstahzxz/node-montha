@@ -2,6 +2,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var apiMob = require('./api/mob');
+var cors = require('cors');
+
 var app = express();
 
 // Setting up API routers
@@ -11,19 +13,7 @@ api.mob = apiMob;
 
 // Express use utilities
 app.use(bodyParser.json());
-
-// Only for dev period
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://localhost:4200"); 
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-
-app.use('/mob', api.mob);
-
-app.get('/test', function (req, res) {
-    res.end('hello');
-});
+app.use('/mob', cors(), api.mob);
 
 // Start server
 app.listen(3000, () => 'Listening!');
