@@ -5,7 +5,6 @@ var config = require('../config/general-config');
 // Router use utilities
 router.use(bodyParser.json());
 
-
 // Router routes
 router.get('/getDp', function (req, res) {
     // Get dp from path in config
