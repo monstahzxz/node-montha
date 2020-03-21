@@ -4,8 +4,8 @@ var auth = {}
 
 auth.passport = passport;
 
-auth.authorize = (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
+auth.authenticate = (req, res, next) => {
+    auth.passport.authenticate('local', (err, user, info) => {
         if (err) {
             return next(err);
         }

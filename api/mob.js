@@ -12,7 +12,7 @@ router.use(auth.passport.session());
 router.use('/private', auth.isAuthenticated, privateRes);
 
 // Mob API routes
-router.post('/login', auth.authorize, function (req, res) {
+router.post('/login', auth.authenticate, function (req, res) {
     res.status(200).json({ 'statusCode': 200, 'message': 'login successful' });
 });
 

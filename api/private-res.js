@@ -8,24 +8,26 @@ router.use(bodyParser.json());
 
 // Router routes
 router.get('/getDp', function (req, res) {
-    // Get dp path from db
-    // let path = '';
-    res.sendFile('vim_avatar.jpg', { root: config.privateResConfig.userPath });
+    // Get dp from path in config
     // Send dp
+    res.sendFile('vim_avatar.jpg', { root: config.privateResConfig.userPath });
 });
 
 router.get('/getSubjects', function (req, res) {
+    // Get subjects belonging to the user with ID from session from db
     let subjects = [
         { name: 'database management', url: '/mob/private/getSubImg/dbms' },
 		{ name: 'computer network', url: '/mob/private/getSubImg/cn' },
 		{ name: 'cryptography', url: '/mob/private/getSubImg/crypto' },
 		{ name: 'machine learning', url: '/mob/private/getSubImg/ml' }
 	];
-
+    // Send subject details
     res.json(subjects);
 });
 
 router.get('/getSubImg/:subId', function (req, res) {
+    // Get img from path in config
+    // Send img
     res.sendFile(req.params.subId + '.jpg', { root: config.privateResConfig.subPath });
 });
 
