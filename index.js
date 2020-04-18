@@ -10,10 +10,21 @@ var app = express();
 var api = {};
 api.mob = apiMob;
 
+var whitelist = ['http://localhost:4200'];
+var corsOptions = {
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    credentials: true
+};
 
 // Express use utilities
 app.use(bodyParser.json());
-app.use('/mob', cors(), api.mob);
+app.use('/mob', cors(corsOptions), api.mob);
 
 // Start server
 app.listen(3000, () => 'Listening!');
