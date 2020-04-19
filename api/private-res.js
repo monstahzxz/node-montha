@@ -1,6 +1,7 @@
 var router = require('express').Router();
 var bodyParser = require('body-parser');
 var config = require('../config/general-config');
+var fs = require('fs');
 
 // Router use utilities
 router.use(bodyParser.json());
@@ -9,7 +10,7 @@ router.use(bodyParser.json());
 router.get('/getDp', function (req, res) {
     // Get dp from path in config
     // Send dp
-    res.sendFile('vim_avatar.jpg', { root: config.privateResConfig.userPath });
+    res.sendFile('dp.jpg', { root: config.privateResConfig.userPath });
 });
 
 router.get('/getSubjects', function (req, res) {
@@ -17,7 +18,7 @@ router.get('/getSubjects', function (req, res) {
     let subjects = [
         { name: 'database management', url: '/mob/private/getSubImg/dbms' },
 		{ name: 'computer network', url: '/mob/private/getSubImg/cn' },
-		{ name: 'cryptography', url: '/mob/private/getSubImg/crypto' },
+		{ name: 'cryptography', url: '/mob/private/getSubImg/crypt' },
 		{ name: 'machine learning', url: '/mob/private/getSubImg/ml' }
 	];
     // Send subject details
