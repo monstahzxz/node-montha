@@ -6,6 +6,10 @@ var generalConfig = {
     dbConfig: {
         user: 'admin',
         pwd: 'foxneutral'
+    },
+    py: {
+        executer: 'py',
+        rootProcessPath: 'core/facenet.py'
     }
 };
 

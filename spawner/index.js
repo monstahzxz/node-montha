@@ -1,0 +1,26 @@
+var spawn = require('child_process').spawn;
+var config = require('../config/general-config');
+
+var spawner = {};
+
+spawner.startPyWorker = function () {
+    spawner.process = spawn(config.py.executer, ['-W ignore', config.py.rootProcessPath]);
+    spawner.process.stdin.pipe(process.stdin);
+    spawner.process.stdout.pipe(process.stdout);
+    spawner.process.stderr.pipe(process.stderr);
+};
+
+spawner.compute = function (data, callback) {
+    spawner.startPyWorker();
+    spawner.process.stdin.write(data);
+    spawner.process.stdin.end();
+
+    spawner.process.stdout.on('data', function (data) {
+        // console.log(data.toString());
+        callback(data.toString());
+    });
+}
+
+// spawner.compute('saran.', function (data) {
+//     console.log(JSON.parse(data));
+// });
