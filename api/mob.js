@@ -23,6 +23,7 @@ router.get('/verify', auth.isAuthenticated, function (req, res) {
 
 router.post('/sendImages', auth.isAuthenticated, function (req, res) {
     controller.handle(req, res);
+    // res.status(200).json({'yep': 'yep'});
 });
 
 

@@ -11,8 +11,10 @@ spawner.startPyWorker = function () {
 };
 
 spawner.compute = function (data, callback) {
+    let { base64Images, tempDir } = data;
+
     spawner.startPyWorker();
-    spawner.process.stdin.write(data);
+    spawner.process.stdin.write(tempDir);
     spawner.process.stdin.end();
 
     spawner.process.stdout.on('data', function (data) {
@@ -24,3 +26,6 @@ spawner.compute = function (data, callback) {
 // spawner.compute('saran.', function (data) {
 //     console.log(JSON.parse(data));
 // });
+
+
+module.exports = spawner;

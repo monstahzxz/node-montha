@@ -9,7 +9,8 @@ var generalConfig = {
     },
     py: {
         executer: 'py',
-        rootProcessPath: 'core/facenet.py'
+        rootProcessPath: 'core/facenet.py',
+        workingDir: 'temp'
     }
 };
 

@@ -23,7 +23,7 @@ var corsOptions = {
 };
 
 // Express use utilities
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
 app.use('/mob', cors(corsOptions), api.mob);
 
 // Start server

@@ -1,12 +1,36 @@
 var spawner = require('../spawner');
+var fs = require('fs');
+var config = require('../config/general-config');
 
 var controller = {};
 
+controller.workingDir = config.py.workingDir;
+
 controller.handle = function (req, res) {
     // Check for base64 images in req
-    let base64Images = req.images
+    let base64Images = req.body.image.map(img => img.replace(/^data:image\/png;base64,/, ''));
+    let tempDir = controller.workingDir + Date.now();
 
-    spawner.compute(base64Images, function (results) {
-        res.status(200).json(JSON.parse(results));
+    base64Images.forEach(function (base64Image) {
+        fs.writeFile(tempDir, base64Image, 'base64', function (err) {
+            if (err) {
+                console.log(err)
+                res.status(500).json({'Error': 'Error uploading image'});
+            }
+        });
+    });
+
+    let data = {
+        base64Images: base64Images,
+        tempDir: tempDir
+    };
+
+    spawner.compute(data, function (results) {
+        console.log(results);
+        res.send(results);
+        // res.status(200).json(JSON.parse(results));
     });
 };
+
+
+module.exports = controller;
