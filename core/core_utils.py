@@ -16,8 +16,11 @@ def detectFaces(image):
     cropped_images = []
     net = cv2.dnn.readNetFromCaffe(config['detector']['meta_path'], config['detector']['model_path'])
     (h, w) = image.shape[:2]
-#     blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
-    blob = cv2.dnn.blobFromImage(cv2.resize(image, (w // 3, h // 3)), 1.0, (w // 3, h // 3), (104.0, 177.0, 123.0))
+    # cv2.imshow('aa', image)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
+    # blob = cv2.dnn.blobFromImage(cv2.resize(image, (w // 3, h // 3)), 1.0, (w // 3, h // 3), (104.0, 177.0, 123.0))
     net.setInput(blob)
     detections = net.forward()
     
@@ -68,16 +71,47 @@ def embedIt(fileName, isFile = True):
     
     return embed
 
+# Crop faces from photos
+def init(dirPath):
+    photos = [f for f in os.listdir(dirPath) if os.path.isfile(dirPath + '/' + f)]
+    destPath = os.path.join(dirPath, config['detector']['dest_path'])
+    os.mkdir(destPath)
+
+    for photo in photos:
+        img = cv2.imread(dirPath + '/' + photo)
+        cropped_faces = detectFaces(img)
+        count = 0
+        
+        for cropped_face in cropped_faces:
+            cv2.imwrite(destPath + '/' + str(count) + photo, cropped_face)
+            count += 1
+    
+    return destPath
+
+# Make embeddings
 def build_embeds(dirPath):
     photos = os.listdir(dirPath)
     vecs = []
-    attendance = {}
     
     for photo in photos:
-        print(dirPath + '/' + photo)
         # img = cv2.imread(dirPath + '/' + photo)
-        # print(img)
         vecs.append({'name': photo, 'embed': embedIt(dirPath + '/' + photo)})
-        attendance[photo] = 0
     
-    return vecs, attendance
+    return vecs
+
+# Predict the incoming vector
+def pred_vecs(class_vecs, vecs):
+    peep = person = 'noone'
+    mi = np.linalg.norm(vecs - class_vecs[0]['embed'])
+    
+    for peep in class_vecs:
+        curr = np.linalg.norm(vecs - peep['embed'])
+        
+        if curr <= mi:
+            mi = curr
+            person = peep['name']
+
+    return person
+    # if mi > 0.88:
+    #     person = 'na'
+        

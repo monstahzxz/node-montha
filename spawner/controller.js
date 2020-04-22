@@ -34,7 +34,6 @@ controller.handle = function (req, res) {
     };
 
     spawner.compute(data, function (results) {
-        console.log(results);
         res.send(results);
         // res.status(200).json(JSON.parse(results));
     });

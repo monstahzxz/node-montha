@@ -18,7 +18,6 @@ spawner.compute = function (data, callback) {
     spawner.process.stdin.end();
 
     spawner.process.stdout.on('data', function (data) {
-        // console.log(data.toString());
         callback(data.toString());
     });
 }
