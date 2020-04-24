@@ -5,22 +5,23 @@ var MongoClient = require('mongodb').MongoClient;
 mongoose.Promise = global.Promise;
 //connection to db
 
-// const db = mongoose.connect('mongodb://localhost:27017/Datastorage',
+const db = mongoose.connect('mongodb://localhost:27017/Datastorage',
+{
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+});
+
+// var url = "mongodb://localhost:27017/Datastorage";
+// MongoClient.connect(url,
+//     function(err, db) {
+//     if (err) throw err;
+//     console.log("Database created!");
+//     db.close();
+// },
 // {
 //     useUnifiedTopology: true,
 //     useNewUrlParser: true
 // });
-
-var url = "mongodb://localhost:27017/Datastorage";
-MongoClient.connect(url,
-    {
-        useUnifiedTopology: true,
-        useNewUrlParser: true
-    }, function(err, db) {
-    if (err) throw err;
-    //console.log("Database created!");
-    db.close();
-  });
 
 //require teacher
 const schemas = require ('./schemas/schema.js');
