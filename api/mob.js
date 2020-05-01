@@ -18,12 +18,11 @@ router.post('/login', auth.authenticate, function (req, res) {
 });
 
 router.get('/verify', auth.isAuthenticated, function (req, res) {
-    res.end('verify success');
+    res.status(200).json({ 'isVerified': true });
 });
 
 router.post('/sendImages', auth.isAuthenticated, function (req, res) {
     controller.handle(req, res);
-    // res.status(200).json({'yep': 'yep'});
 });
 
 

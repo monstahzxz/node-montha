@@ -7,6 +7,10 @@ var controller = {};
 
 controller.workingDir = config.py.workingDir;
 
+if (!fs.existsSync(controller.workingDir)) {
+    fs.mkdirSync(controller.workingDir);
+}
+
 controller.handle = function (req, res) {
     // Check for base64 images in req
     let base64Images = req.body.image.map(img => img.replace(/^data:image\/png;base64,/, ''));
@@ -35,7 +39,6 @@ controller.handle = function (req, res) {
 
     spawner.compute(data, function (results) {
         res.send(results);
-        // res.status(200).json(JSON.parse(results));
     });
 };
 
