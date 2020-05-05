@@ -101,17 +101,32 @@ def build_embeds(dirPath):
 
 # Predict the incoming vector
 def pred_vecs(class_vecs, vecs):
-    peep = person = 'noone'
-    mi = np.linalg.norm(vecs - class_vecs[0]['embed'])
-    
-    for peep in class_vecs:
-        curr = np.linalg.norm(vecs - peep['embed'])
-        
-        if curr <= mi:
-            mi = curr
-            person = peep['name']
+    result = {
+        'absent': len(class_vecs),
+        'present': 0,
+        'absentRNos': [i for i in range(1, len(class_vecs) + 1)]
+    }
 
-    return person
+    for idxP in vecs:
+        vec = idxP['embed']
+        peep = person = 'noone'
+        mi = np.linalg.norm(vec - class_vecs[0]['embed'])
+        
+        for peep in class_vecs:
+            curr = np.linalg.norm(vec - peep['embed'])
+            
+            if curr <= mi:
+                mi = curr
+                person = peep['name']
+
+        for i in range(len(result['absentRNos'])):
+            if result['absentRNos'][i] == person:
+                result['absentRNos'].pop(i)
+                result['absent'] -= 1
+                result['present'] += 1
+                break
+
+    return result
     # if mi > 0.88:
     #     person = 'na'
         

@@ -9,6 +9,6 @@ with open('core/class_vecs.pickle', 'rb') as handle:
 
 destPath = cu.init(tempDir)
 vecs = cu.build_embeds(destPath)
-predictedPerson = cu.pred_vecs(class_vecs, vecs[0]['embed'])
+result = cu.pred_vecs(class_vecs, vecs)
 
-print(json.dumps({1: predictedPerson}))
+print(json.dumps(result))
