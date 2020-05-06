@@ -1,5 +1,8 @@
 from config import config
 from keras.models import Model, load_model
+from keras.backend import get_session
+from keras.backend import set_session
+import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy
 import cv2
@@ -8,8 +11,14 @@ import dlib
 import os
 import pickle
 
+
 img_size = config['img_size']
+
+sess = tf.Session()
+graph = tf.compat.v1.get_default_graph()
+set_session(sess)
 model = load_model(config['model_path'])
+
 
 def detectFaces(image):
     # image = img
@@ -64,38 +73,46 @@ def l2Norm(embed):
     return embed / np.linalg.norm(embed)
 
 def embedIt(fileName, isFile = True):
-    img = cv2.imread(fileName) if isFile else fileName
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img_cropped = cv2.resize(img, (img_size, img_size))
-    embed = l2Norm(model.predict(prewhiten(img_cropped.reshape(-1, img_size, img_size, 3))))
-    
-    return embed
+    global sess
+    global graph
+    set_session(sess)
+    with graph.as_default():
+        img = cv2.imread(fileName) if isFile else fileName
+        # cv2.imshow('aa', img)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img_resized = cv2.resize(img, (img_size, img_size))
+        embed = l2Norm(model.predict(prewhiten(img_resized.reshape(-1, img_size, img_size, 3))))
+        
+        return embed
 
 # Crop faces from photos
 def init(dirPath):
     photos = [f for f in os.listdir(dirPath) if os.path.isfile(dirPath + '/' + f)]
-    destPath = os.path.join(dirPath, config['detector']['dest_path'])
-    os.mkdir(destPath)
+    # destPath = os.path.join(dirPath, config['detector']['dest_path'])
+    # os.mkdir(destPath)
+    cropped_faces = []
 
     for photo in photos:
         img = cv2.imread(dirPath + '/' + photo)
-        cropped_faces = detectFaces(img)
+        c_faces = detectFaces(img)
         count = 0
         
-        for cropped_face in cropped_faces:
-            cv2.imwrite(destPath + '/' + str(count) + photo, cropped_face)
-            count += 1
+        for c_face in c_faces:
+            cropped_faces.append(c_face)
+        #     cv2.imwrite(destPath + '/' + str(count) + photo, cropped_face)
+        #     count += 1
     
-    return destPath
+    return cropped_faces
 
 # Make embeddings
-def build_embeds(dirPath):
-    photos = os.listdir(dirPath)
+def build_embeds(cropped_faces):
+    # photos = os.listdir(dirPath)
     vecs = []
     
-    for photo in photos:
-        # img = cv2.imread(dirPath + '/' + photo)
-        vecs.append({'name': photo, 'embed': embedIt(dirPath + '/' + photo)})
+    for face in cropped_faces:
+        vecs.append({'name': 'na', 'embed': embedIt(face, isFile = False)})
     
     return vecs
 

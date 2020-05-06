@@ -10,7 +10,12 @@ var generalConfig = {
     py: {
         executer: 'py',
         rootProcessPath: 'core/facenet.py',
-        workingDir: 'temp'
+        workingDir: 'temp',
+        reqOptions: {
+            method: 'POST',
+            uri: 'http://localhost:5000/compute',
+            json: true
+        }
     }
 };
 

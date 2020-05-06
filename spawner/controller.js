@@ -2,10 +2,12 @@ var spawner = require('../spawner');
 var fs = require('fs');
 var path = require('path');
 var config = require('../config/general-config');
+var request = require('request-promise');
 
 var controller = {};
 
 controller.workingDir = config.py.workingDir;
+controller.reqOptions = config.py.reqOptions;
 
 if (!fs.existsSync(controller.workingDir)) {
     fs.mkdirSync(controller.workingDir);
@@ -33,12 +35,24 @@ controller.handle = function (req, res) {
     });
 
     let data = {
-        base64Images: base64Images,
         tempDir: tempDir
     };
 
-    spawner.compute(data, function (results) {
+    // spawner.compute(data, function (results) {
+    //     res.send(results);
+    // });
+
+    controller.makeReq(data, function (results) {
         res.send(results);
+    });
+};
+
+controller.makeReq = function(data, callback) {
+    controller.reqOptions.body = data;
+
+    request(controller.reqOptions)
+    .then(function (result) {
+        callback(result);
     });
 };
 

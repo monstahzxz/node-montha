@@ -5,26 +5,24 @@ var spawner = {};
 
 spawner.startPyWorker = function () {
     spawner.process = spawn(config.py.executer, ['-W ignore', config.py.rootProcessPath]);
-    spawner.process.stdin.pipe(process.stdin);
-    spawner.process.stdout.pipe(process.stdout);
-    spawner.process.stderr.pipe(process.stderr);
+//     spawner.process.stdin.pipe(process.stdin);
+//     spawner.process.stdout.pipe(process.stdout);
+//     spawner.process.stderr.pipe(process.stderr);
 };
 
 spawner.compute = function (data, callback) {
     let { base64Images, tempDir } = data;
 
-    spawner.startPyWorker();
-    spawner.process.stdin.write(tempDir);
-    spawner.process.stdin.end();
+    // spawner.startPyWorker();
+    // spawner.process.stdin.write(tempDir);
+    // spawner.process.stdin.end();
 
-    spawner.process.stdout.on('data', function (data) {
-        callback(data.toString());
-    });
-}
+    // spawner.process.stdout.on('data', function (data) {
+    //     callback(data.toString());
+    // });
+};
 
-// spawner.compute('saran.', function (data) {
-//     console.log(JSON.parse(data));
-// });
+spawner.startPyWorker();
 
 
 module.exports = spawner;
