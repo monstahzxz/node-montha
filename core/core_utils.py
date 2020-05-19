@@ -14,9 +14,9 @@ import pickle
 
 img_size = config['img_size']
 
-sess = tf.Session()
+sess = tf.compat.v1.Session()
 graph = tf.compat.v1.get_default_graph()
-set_session(sess)
+tf.compat.v1.keras.backend.set_session(sess)
 model = load_model(config['model_path'])
 
 
@@ -75,7 +75,7 @@ def l2Norm(embed):
 def embedIt(fileName, isFile = True):
     global sess
     global graph
-    set_session(sess)
+    tf.compat.v1.keras.backend.set_session(sess)
     with graph.as_default():
         img = cv2.imread(fileName) if isFile else fileName
         # cv2.imshow('aa', img)
@@ -137,7 +137,7 @@ def pred_vecs(class_vecs, vecs):
                 person = peep['name']
 
         for i in range(len(result['absentRNos'])):
-            if result['absentRNos'][i] == person:
+            if str(result['absentRNos'][i]) == str(person)[: len(person) - 4]:
                 result['absentRNos'].pop(i)
                 result['absent'] -= 1
                 result['present'] += 1
@@ -146,4 +146,3 @@ def pred_vecs(class_vecs, vecs):
     return result
     # if mi > 0.88:
     #     person = 'na'
-        

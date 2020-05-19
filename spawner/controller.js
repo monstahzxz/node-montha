@@ -3,6 +3,8 @@ var fs = require('fs');
 var path = require('path');
 var config = require('../config/general-config');
 var request = require('request-promise');
+var googleapi = require('../../cli-montha/oauth');
+var db = require('../../cli-montha');
 
 var controller = {};
 
@@ -35,7 +37,9 @@ controller.handle = function (req, res) {
     });
 
     let data = {
-        tempDir: tempDir
+        tempDir: tempDir,
+        req: req,
+        res: res
     };
 
     // spawner.compute(data, function (results) {
@@ -52,6 +56,31 @@ controller.makeReq = function(data, callback) {
 
     request(controller.reqOptions)
     .then(function (result) {
+        dayArr = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        let apiRequest = {};
+        apiRequest.noofhours = data.req.body.hours || 1;
+
+        let date = new Date();
+        let dd = date.getDate();
+        let mm = date.getMonth() + 1;
+
+        apiRequest.date = dd.toString() + '/' + mm.toString();
+        apiRequest.day = dayArr[date.getDay()];
+
+        listArr = []
+        for(i = 0; i < result['absent'] + result['present']; ++i) {
+            listArr.push('P');
+        }
+        for(i = 0; i < result['absent']; ++i) {
+            listArr[result['absentRNos'][i] - 1] = 'A';
+        }
+        
+        apiRequest.list = listArr;
+        // console.log(apiRequest);
+        db.findSpreadSheetId(data.req.body.subject, (spreadSheetId) => {
+            googleapi.appendData(spreadSheetId, apiRequest, apiRequest.noofhours);
+        });
+        
         callback(result);
     });
 };
